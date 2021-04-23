@@ -8,6 +8,7 @@ import com.mupper.personlist.domain.usecase.GetPersonsUseCase
 import com.mupper.personlist.domain.usecase.RetrievePersonsUseCase
 import com.mupper.personlist.presentation.entity.UIPerson
 import com.mupper.personlist.presentation.mapper.DomainPersonToUIPersonMapper
+import com.mupper.personlist.utils.ListMapper
 import com.mupper.personlist.utils.ListMapperImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -27,7 +28,7 @@ interface PersonViewModel {
 class PersonViewModelImpl @Inject constructor(
     private val getPersonsUseCase: GetPersonsUseCase,
     private val retrievePersonsUseCase: RetrievePersonsUseCase,
-    private val domainPersonToUIPersonListMapper: ListMapperImpl<DomainPerson, UIPerson>,
+    private val domainPersonToUIPersonListMapper: ListMapper<DomainPerson, UIPerson>,
 ) : ViewModel(), PersonViewModel {
     override suspend fun retrievePersons() {
         retrievePersonsUseCase()
