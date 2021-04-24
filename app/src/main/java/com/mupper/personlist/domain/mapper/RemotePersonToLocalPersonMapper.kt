@@ -19,6 +19,6 @@ class RemotePersonToLocalPersonMapperImpl @Inject constructor(
         val birthdaySource = birthday ?: throw RemoteMappingException()
         val birthday = dateFormat.parse(birthdaySource) ?: throw RemoteMappingException()
 
-        LocalPerson(id, firstName, lastName, birthday)
+        LocalPerson(id.toLong(), firstName, lastName, "birthday")
     }
 }
