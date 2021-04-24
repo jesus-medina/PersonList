@@ -16,9 +16,6 @@ import kotlin.random.Random
 
 class RemotePersonToLocalPersonMapperImplTest {
     @RelaxedMockK
-    lateinit var dateFormat: DateFormat
-
-    @RelaxedMockK
     lateinit var remotePerson: RemotePerson
 
     @InjectMockKs
@@ -27,6 +24,7 @@ class RemotePersonToLocalPersonMapperImplTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { remotePerson.id } returns "${Random.nextLong()}"
     }
 
     @Test
@@ -39,7 +37,7 @@ class RemotePersonToLocalPersonMapperImplTest {
         val result = remotePersonToLocalPersonMapperImpl.map(remotePerson).id
 
         // Then
-        assertThat(result, `is`(expectedId))
+        assertThat(result, `is`(expectedId.toLong()))
     }
 
     @Test
@@ -71,10 +69,8 @@ class RemotePersonToLocalPersonMapperImplTest {
     @Test
     fun mapShouldReturnLocalPersonWithExpectedBirthdayGivenBirthdayOnRemotePersonReturnsBirthdayAndParseOnDateFormatWithBirthdayReturnsExpectedBirthday() {
         // Given
-        val birthday = "${Random.nextInt()}"
-        every { remotePerson.birthday } returns birthday
-        val expectedBirthday = Date(Random.nextLong())
-        every { dateFormat.parse(birthday) } returns expectedBirthday
+        val expectedBirthday = "${Random.nextInt()}"
+        every { remotePerson.birthday } returns expectedBirthday
 
         // When
         val result = remotePersonToLocalPersonMapperImpl.map(remotePerson).birthday
@@ -120,9 +116,9 @@ class RemotePersonToLocalPersonMapperImplTest {
     }
 
     @Test(expected = RemoteMappingException::class)
-    fun mapShouldThrowRemoteMappingExceptionGivenParseOnDateFormatReturnsNull() {
+    fun mapShouldThrowRemoteMappingExceptionGivenIdOnRemotePersonIsEmpty() {
         // Given
-        every { dateFormat.parse(any()) } returns null
+        every { remotePerson.id } returns ""
 
         // When
         remotePersonToLocalPersonMapperImpl.map(remotePerson)

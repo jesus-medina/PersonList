@@ -9,16 +9,14 @@ import javax.inject.Inject
 
 interface RemotePersonToLocalPersonMapper : Mapper<RemotePerson, LocalPerson>
 
-class RemotePersonToLocalPersonMapperImpl @Inject constructor(
-    private val dateFormat: DateFormat,
-) : RemotePersonToLocalPersonMapper {
+class RemotePersonToLocalPersonMapperImpl @Inject constructor() : RemotePersonToLocalPersonMapper {
     override fun map(input: RemotePerson): LocalPerson = with(input) {
         val id = id ?: throw RemoteMappingException()
+        if (id.isEmpty()) throw RemoteMappingException()
         val firstName = firstName ?: throw RemoteMappingException()
         val lastName = lastName ?: throw RemoteMappingException()
-        val birthdaySource = birthday ?: throw RemoteMappingException()
-        val birthday = dateFormat.parse(birthdaySource) ?: throw RemoteMappingException()
+        val birthday = birthday ?: throw RemoteMappingException()
 
-        LocalPerson(id, firstName, lastName, birthday)
+        LocalPerson(id.toLong(), firstName, lastName, birthday)
     }
 }

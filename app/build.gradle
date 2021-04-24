@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.squareup.sqldelight'
 }
 
 android {
@@ -91,4 +92,15 @@ dependencies {
     // Mockk
     testImplementation "io.mockk:mockk:$mockk_version"
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+
+    // sql delight
+    implementation "com.squareup.sqldelight:coroutines-extensions:$sqld_version"
+    implementation "com.squareup.sqldelight:android-driver:$sqld_version"
+}
+
+sqldelight {
+    PersonDatabase {
+        packageName = "com.mupper.personlist"
+        schemaOutputDirectory = file("src/main/sqldelight/com/mupper/personlist/databases")
+    }
 }

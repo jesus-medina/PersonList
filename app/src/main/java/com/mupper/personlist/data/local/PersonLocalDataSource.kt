@@ -1,5 +1,8 @@
 package com.mupper.personlist.data.local
 
+import com.mupper.personlist.PersonQueries
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -8,12 +11,19 @@ interface PersonLocalDataSource {
     fun getPersons(): Flow<List<LocalPerson>>
 }
 
-class PersonLocalDataSourceImpl @Inject constructor() : PersonLocalDataSource {
+class PersonLocalDataSourceImpl @Inject constructor(
+    private val personQueries: PersonQueries,
+) : PersonLocalDataSource {
     override fun addPersons(persons: List<LocalPerson>) {
-        TODO("Not yet implemented")
+        persons.forEach(::insertOrReplacePerson)
     }
 
-    override fun getPersons(): Flow<List<LocalPerson>> {
-        TODO("Not yet implemented")
+    private fun insertOrReplacePerson(localPerson: LocalPerson) {
+        with(localPerson) {
+            personQueries.insertOrReplacePerson(id, firstName, lastName, birthday)
+        }
     }
+
+    override fun getPersons(): Flow<List<LocalPerson>> =
+        personQueries.getPersons().asFlow().mapToList()
 }

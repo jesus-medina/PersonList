@@ -1,10 +1,5 @@
 package com.mupper.personlist.data.local
 
-import java.util.Date
+import com.mupper.personlist.Person
 
-data class LocalPerson(
-    val id: String,
-    val firstName: String,
-    val lastName: String,
-    val birthday: Date
-)
+typealias LocalPerson = Person
