@@ -30,6 +30,6 @@ class RetrievePersonsUseCaseImplTest {
         retrievePersonsUseCaseImpl()
 
         // Then
-        verify { personRepository.retrievePersons() }
+        verify { runBlockingTest { personRepository.retrievePersons() } }
     }
 }
