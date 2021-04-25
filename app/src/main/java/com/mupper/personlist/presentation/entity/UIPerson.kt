@@ -6,6 +6,6 @@ data class UIPerson(
     val lastName: String,
     val birthday: String,
 ) {
-    val fullName: String get() = TODO()
-    val acronym: String get() = TODO()
+    val fullName: String get() = "TODO()"
+    val acronym: String get() = "TODO()"
 }

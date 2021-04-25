@@ -1,7 +1,6 @@
 package com.mupper.personlist.di
 
 import com.mupper.personlist.data.local.LocalPerson
-import com.mupper.personlist.data.remote.RemotePerson
 import com.mupper.personlist.domain.entity.DomainPerson
 import com.mupper.personlist.domain.mapper.LocalPersonToDomainPersonMapperImpl
 import com.mupper.personlist.domain.mapper.RemotePersonToLocalPersonMapper
@@ -13,7 +12,6 @@ import com.mupper.personlist.utils.ListMapperImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -40,5 +38,5 @@ object MapperModule {
     @Provides
     fun providesBirthdayDateFormat(
         appLocale: Locale
-    ): DateFormat = SimpleDateFormat("M/d/yy", appLocale)
+    ): DateFormat = SimpleDateFormat("yyyy-MM-dd", appLocale)
 }

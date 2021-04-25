@@ -11,6 +11,8 @@ import com.mupper.personlist.presentation.viewmodel.PersonViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -24,7 +26,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.initRecyclerView()
+        binding.apply {
+            initMainToolbar()
+            initRecyclerView()
+            initSwipeToRefresh()
+            retrievePersons()
+        }
+    }
+
+    private fun ActivityMainBinding.initMainToolbar() {
+        setSupportActionBar(mainToolbar)
     }
 
     private fun ActivityMainBinding.initRecyclerView() {
@@ -34,6 +45,19 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context)
         }
         lifecycleScope.launchWhenCreated(collectPersonsFromViewModel)
+    }
+
+    private fun ActivityMainBinding.initSwipeToRefresh() {
+        personsSwipeToRefresh.setOnRefreshListener {
+            retrievePersons()
+        }
+    }
+
+    private fun ActivityMainBinding.retrievePersons() {
+        lifecycleScope.launch {
+            personViewModel.retrievePersons()
+            personsSwipeToRefresh.isRefreshing = false
+        }
     }
 
     private val collectPersonsFromViewModel: suspend CoroutineScope.() -> Unit = {
