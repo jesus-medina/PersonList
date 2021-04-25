@@ -21,13 +21,13 @@ interface PersonRepository {
 class PersonRepositoryImpl @Inject constructor(
     private var personLocalDataSource: PersonLocalDataSource,
     private var personRemoteDataSource: PersonRemoteDataSource,
-    private var remotePersonToLocalPersonListMapper: ListMapper<RemotePerson, LocalPerson>,
+    private var remotePersonToLocalPersonListMapper: RemotePersonToLocalPersonMapper,
     private var localPersonToDomainPersonListMapper: ListMapper<LocalPerson, DomainPerson>
 ) : PersonRepository {
     override suspend fun retrievePersons() {
         personRemoteDataSource.getPersons()
             .map(remotePersonToLocalPersonListMapper::map)
-            .collect(personLocalDataSource::addPersons)
+            .also(personLocalDataSource::addPersons)
     }
 
     override fun getPersons(): Flow<List<DomainPerson>> =

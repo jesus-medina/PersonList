@@ -15,6 +15,7 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
@@ -48,7 +49,7 @@ class PersonRepositoryImplTest {
         runBlockingTest {
             // Given
             val listOfRemotePerson = listOf(mockk<RemotePerson>())
-            every { personRemoteDataSource.getPersons() } returns flowOf(listOfRemotePerson)
+            every { runBlocking { personRemoteDataSource.getPersons() } } returns listOfRemotePerson
             val expectedListOfLocalPerson = listOf(mockk<LocalPerson>())
             every { remotePersonToLocalPersonListMapper.map(listOfRemotePerson) } returns expectedListOfLocalPerson
 
@@ -60,18 +61,19 @@ class PersonRepositoryImplTest {
         }
 
     @Test
-    fun getPersonsShouldReturnExpectedListOfDomainPersonGivenGetPersonsOnPersonLocalDataSourceReturnsFlowOfListOfDomainPersonAndMapOnLocalPersonToDomainPersonListMapperReturnsExpectedListOfDomainPerson() = runBlockingTest {
-        // Given
-        val listOfLocalPerson = listOf(mockk<LocalPerson>())
-        val flowOfListOfDomainPerson = flowOf(listOfLocalPerson)
-        every { personLocalDataSource.getPersons() } returns flowOfListOfDomainPerson
-        val expectedListOfDomainPerson = listOf(mockk<DomainPerson>())
-        every { localPersonToDomainPersonListMapper.map(listOfLocalPerson) } returns expectedListOfDomainPerson
+    fun getPersonsShouldReturnExpectedListOfDomainPersonGivenGetPersonsOnPersonLocalDataSourceReturnsFlowOfListOfDomainPersonAndMapOnLocalPersonToDomainPersonListMapperReturnsExpectedListOfDomainPerson() =
+        runBlockingTest {
+            // Given
+            val listOfLocalPerson = listOf(mockk<LocalPerson>())
+            val flowOfListOfDomainPerson = flowOf(listOfLocalPerson)
+            every { personLocalDataSource.getPersons() } returns flowOfListOfDomainPerson
+            val expectedListOfDomainPerson = listOf(mockk<DomainPerson>())
+            every { localPersonToDomainPersonListMapper.map(listOfLocalPerson) } returns expectedListOfDomainPerson
 
-        // When
-        val result = personRepositoryImpl.getPersons().first()
+            // When
+            val result = personRepositoryImpl.getPersons().first()
 
-        // Then
-        assertThat(result, `is`(expectedListOfDomainPerson))
-    }
+            // Then
+            assertThat(result, `is`(expectedListOfDomainPerson))
+        }
 }
