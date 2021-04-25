@@ -1,7 +1,5 @@
 package com.mupper.personlist.di
 
-import com.mupper.personlist.domain.repository.PersonRepository
-import com.mupper.personlist.domain.repository.PersonRepositoryImpl
 import com.mupper.personlist.domain.usecase.GetPersonsUseCase
 import com.mupper.personlist.domain.usecase.GetPersonsUseCaseImpl
 import com.mupper.personlist.domain.usecase.RetrievePersonsUseCase
@@ -13,15 +11,15 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-abstract class ViewModelModule {
+interface ViewModelModule {
 
   @Binds
-  abstract fun bindsGetPersonsUseCase(
+  fun bindsGetPersonsUseCase(
     getPersonsUseCaseImpl: GetPersonsUseCaseImpl
   ): GetPersonsUseCase
 
   @Binds
-  abstract fun bindsRetrievePersonsUseCase(
+  fun bindsRetrievePersonsUseCase(
     retrievePersonsUseCaseImpl: RetrievePersonsUseCaseImpl
   ): RetrievePersonsUseCase
 }
