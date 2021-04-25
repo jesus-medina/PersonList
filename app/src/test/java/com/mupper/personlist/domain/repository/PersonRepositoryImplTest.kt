@@ -5,17 +5,14 @@ import com.mupper.personlist.data.local.PersonLocalDataSource
 import com.mupper.personlist.data.remote.PersonRemoteDataSource
 import com.mupper.personlist.data.remote.RemotePerson
 import com.mupper.personlist.domain.entity.DomainPerson
+import com.mupper.personlist.domain.mapper.RemotePersonToLocalPersonMapper
 import com.mupper.personlist.utils.ListMapper
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
@@ -31,7 +28,7 @@ class PersonRepositoryImplTest {
     lateinit var personRemoteDataSource: PersonRemoteDataSource
 
     @RelaxedMockK
-    lateinit var remotePersonToLocalPersonListMapper: ListMapper<RemotePerson, LocalPerson>
+    lateinit var remotePersonToLocalPersonMapper: RemotePersonToLocalPersonMapper
 
     @RelaxedMockK
     lateinit var localPersonToDomainPersonListMapper: ListMapper<LocalPerson, DomainPerson>
@@ -45,18 +42,19 @@ class PersonRepositoryImplTest {
     }
 
     @Test
-    fun retrievePersonsShouldCallAddPersonsWithExpectedListOfLocalPersonGivenGetPersonOnPersonRemoteDataSourceReturnsFlowOfListOfRemotePersonAndMapOnRemotePersonToLocalPersonListMapperWithListOfRemotePersonReturnsExpectedList() =
+    fun retrievePersonsShouldCallAddPersonsWithExpectedListOfLocalPersonGivenGetPersonOnPersonRemoteDataSourceReturnsRemotePersonAndMapOnRemotePersonToLocalPersonMapperWithListOfRemotePersonReturnsLocalPerson() =
         runBlockingTest {
             // Given
-            val listOfRemotePerson = listOf(mockk<RemotePerson>())
-            every { runBlocking { personRemoteDataSource.getPersons() } } returns listOfRemotePerson
-            val expectedListOfLocalPerson = listOf(mockk<LocalPerson>())
-            every { remotePersonToLocalPersonListMapper.map(listOfRemotePerson) } returns expectedListOfLocalPerson
+            val remotePerson = mockk<RemotePerson>()
+            coEvery { personRemoteDataSource.getPersons() } returns listOf(remotePerson)
+            val localPerson = mockk<LocalPerson>()
+            every { remotePersonToLocalPersonMapper.map(remotePerson) } returns localPerson
 
             // When
             personRepositoryImpl.retrievePersons()
 
             // Then
+            val expectedListOfLocalPerson = listOf(localPerson)
             verify { personLocalDataSource.addPersons(expectedListOfLocalPerson) }
         }
 

@@ -26,6 +26,8 @@ class DomainPersonToUIPersonMapperImplTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { domainPerson.firstName } returns "${Random.nextInt()}"
+        every { domainPerson.lastName } returns "${Random.nextInt()}"
     }
 
     @Test
