@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mupper.personlist.databinding.ActivityMainBinding
 import com.mupper.personlist.presentation.ui.adapter.PersonsAdapter
@@ -42,7 +43,13 @@ class MainActivity : AppCompatActivity() {
         personsAdapter = PersonsAdapter()
         personsRecyclerView.apply {
             adapter = personsAdapter
-            layoutManager = LinearLayoutManager(context)
+            val linearLayoutManager = LinearLayoutManager(context)
+            layoutManager = linearLayoutManager
+            val dividerItemDecoration = DividerItemDecoration(
+                context,
+                linearLayoutManager.orientation
+            )
+            addItemDecoration(dividerItemDecoration)
         }
         lifecycleScope.launchWhenCreated(collectPersonsFromViewModel)
     }
