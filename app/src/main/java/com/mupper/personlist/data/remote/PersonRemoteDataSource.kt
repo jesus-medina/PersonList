@@ -1,14 +1,21 @@
 package com.mupper.personlist.data.remote
 
-import kotlinx.coroutines.flow.Flow
+import io.ktor.client.HttpClient
+import io.ktor.client.request.*
 import javax.inject.Inject
 
 interface PersonRemoteDataSource {
-    fun getPersons(): Flow<List<RemotePerson>>
+    suspend fun getPersons(): List<RemotePerson>
 }
 
-class PersonRemoteDataSourceImpl @Inject constructor() : PersonRemoteDataSource {
-    override fun getPersons(): Flow<List<RemotePerson>> {
-        TODO("Not yet implemented")
+class PersonRemoteDataSourceImpl @Inject constructor(
+    private val httpClient: HttpClient
+) : PersonRemoteDataSource {
+    override suspend fun getPersons(): List<RemotePerson> =
+        httpClient.get(ENDPOINT_PERSONS_LIST)
+
+    companion object {
+        private const val ENDPOINT_PERSONS_LIST =
+            "https://60846f739b2bed0017040fca.mockapi.io/v1/persons"
     }
 }

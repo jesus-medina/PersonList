@@ -28,9 +28,9 @@ object MapperModule {
     ): ListMapper<DomainPerson, UIPerson> = ListMapperImpl(domainPersonToUIPersonMapperImpl)
 
     @Provides
-    fun providesRemotePersonToLocalPersonListMapper(
+    fun providesRemotePersonToLocalPersonMapper(
         remotePersonToLocalPersonMapperImpl: RemotePersonToLocalPersonMapperImpl
-    ): ListMapper<RemotePerson, LocalPerson> = ListMapperImpl(remotePersonToLocalPersonMapperImpl)
+    ): RemotePersonToLocalPersonMapper = remotePersonToLocalPersonMapperImpl
 
     @Provides
     fun providesLocalPersonToDomainPersonListMapper(

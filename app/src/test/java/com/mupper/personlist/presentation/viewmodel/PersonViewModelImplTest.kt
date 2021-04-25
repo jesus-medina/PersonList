@@ -6,12 +6,9 @@ import com.mupper.personlist.domain.usecase.GetPersonsUseCase
 import com.mupper.personlist.domain.usecase.RetrievePersonsUseCase
 import com.mupper.personlist.presentation.entity.UIPerson
 import com.mupper.personlist.utils.ListMapper
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
@@ -49,7 +46,7 @@ class PersonViewModelImplTest {
         personViewModelImpl.retrievePersons()
 
         // Then
-        verify { runBlockingTest { retrievePersonsUseCase() } }
+        coVerify { retrievePersonsUseCase() }
     }
 
     @Test

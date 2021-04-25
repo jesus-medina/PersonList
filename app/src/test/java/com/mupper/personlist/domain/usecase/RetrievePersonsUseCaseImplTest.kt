@@ -2,6 +2,7 @@ package com.mupper.personlist.domain.usecase
 
 import com.mupper.personlist.domain.repository.PersonRepository
 import io.mockk.MockKAnnotations
+import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -30,6 +31,6 @@ class RetrievePersonsUseCaseImplTest {
         retrievePersonsUseCaseImpl()
 
         // Then
-        verify { runBlockingTest { personRepository.retrievePersons() } }
+        coVerify { personRepository.retrievePersons() }
     }
 }
