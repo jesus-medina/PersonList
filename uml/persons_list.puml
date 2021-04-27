@@ -1,0 +1,173 @@
+@startuml
+
+title Person List - Class Diagram
+
+package utils {
+interface Mapper {
++ map(input: I): O
+}
+
+interface ListMapper implements Mapper {
++ map(input: List<I>): List<O>
+}
+
+class ListMapperImpl implements ListMapper {
++ ListMapperImpl(mapper: Mapper<I, O>)
++ map(input: List<I>): List<O>
+}
+}
+
+package presentation {
+
+package ui {
+class MainActivity
+}
+
+package viewmodel {
+class PersonViewModel {
++ PersonViewModel(\ngetPersonsUseCase: GetPersonsUseCase,\nretrievePersonsUseCase: RetrievePersonsUseCase,\ndomainPersonToUIPersonListMapper: ListMapper<DomainPerson, UIPerson>)
++ retrievePersons()
++ getPersons(): StateFlow<List<UIPerson>>
+}
+}
+
+package presentationmapper {
+interface DomainPersonToUIPersonMapper implements Mapper {
++ map(input: DomainPerson): UIPerson
+}
+
+class DomainPersonToUIPersonMapperImpl implements DomainPersonToUIPersonMapper
+}
+
+class UIPerson {
++ acronym: String
++ fullName: String
++ birthday: String
+}
+}
+
+package domain {
+
+package usecase {
+interface RetrievePersonsUseCase {
++ invoke()
+}
+
+class RetrievePersonsUseCaseImpl implements RetrievePersonsUseCase {
++ RetrievePersonsUseCaseImpl(personRepository: PersonRepository)
+}
+
+interface GetPersonsUseCase {
++ invoke(): Flow<List<DomainPerson>>
+}
+
+class GetPersonsUseCaseImpl implements GetPersonsUseCase {
++ GetPersonsUseCaseImpl(personRepository: PersonRepository)
+}
+}
+
+package repository {
+interface PersonRepository {
++ retrievePersons()
++ getPersons(): Flow<List<DomainPerson>>
+}
+
+class PersonRepositoryImpl implements PersonRepository {
++ PersonRepositoryImpl(\npersonLocalDataSource: PersonLocalDataSource,\npersonRemoteDataSource: PersonRemoteDataSource,\nremotePersonToLocalPersonMapper: RemotePersonToLocalPersonMapper,\nlocalPersonToDomainPersonListMapper: ListMapper<LocalPerson, DomainPerson>\n)
+}
+}
+
+package domainmapper {
+interface RemotePersonToLocalPersonMapper implements Mapper {
++ map(input: RemotePerson): LocalPerson
+}
+
+class RemotePersonToLocalPersonMapperImpl implements RemotePersonToLocalPersonMapper
+
+interface LocalPersonToDomainPersonMapper implements Mapper {
++ map(input: LocalPerson): DomainPerson
+}
+
+class LocalPersonToDomainPersonMapperImpl implements LocalPersonToDomainPersonMapper
+}
+
+class DomainPerson {
++ firstName: String
++ lastName: String
++ birthDay: Date
+}
+}
+
+package data {
+
+package local {
+interface PersonLocalDataSource {
++ addPersons(persons: List<LocalPerson>)
++ getPersons(): Flow<List<LocalPerson>>
+}
+
+class PersonLocalDataSourceImpl implements PersonLocalDataSource {
++ PersonLocalDataSourceImpl(personQueries: PersonQueries)
+}
+
+class LocalPerson {
++ firstName: String
++ lastName: String
++ birthDay: Date
+}
+}
+
+package sqldelight {
+interface PersonQueries {
++ <T : Any> getPersons(mapper: (id: Long, firstName: String, lastName: String, birthday: String) -> T): Query<T>
++ getPersons(): Query<Person>
++ insertOrReplacePerson(id: Long?, firstName: String, lastName: String, birthday: String)
+}
+}
+
+package remote {
+interface PersonRemoteDataSource {
++ getPersons(): List<RemotePerson>
+}
+
+class PersonRemoteDataSourceImpl implements PersonRemoteDataSource {
++ PersonRemoteDataSourceImpl(httpClient: HttpClient)
+}
+
+class RemotePerson {
++ firstName: String
++ lastName: String
++ birthDay: String
+}
+}
+
+package ktor {
+class HttpClient
+}
+}
+
+MainActivity --> PersonViewModel
+PersonViewModel --> UIPerson
+PersonViewModel --> RetrievePersonsUseCase
+PersonViewModel --> GetPersonsUseCase
+PersonViewModel -U-> ListMapper
+DomainPersonToUIPersonMapper --> UIPerson
+RetrievePersonsUseCaseImpl --> PersonRepository
+GetPersonsUseCaseImpl --> PersonRepository
+GetPersonsUseCase --> DomainPerson
+PersonRepository --> DomainPerson
+DomainPersonToUIPersonMapper --> DomainPerson
+RemotePersonToLocalPersonMapper --> RemotePerson
+RemotePersonToLocalPersonMapper --> LocalPerson
+LocalPersonToDomainPersonMapper --> RemotePerson
+LocalPersonToDomainPersonMapper --> LocalPerson
+PersonRepositoryImpl --> PersonLocalDataSource
+PersonRepositoryImpl --> PersonRemoteDataSource
+PersonRepositoryImpl --> RemotePersonToLocalPersonMapper
+PersonRepositoryImpl -U-> ListMapper
+PersonLocalDataSource --> LocalPerson
+PersonRemoteDataSource --> RemotePerson
+PersonLocalDataSourceImpl --> PersonQueries
+PersonRemoteDataSourceImpl --> HttpClient
+
+@enduml

@@ -19,22 +19,17 @@ import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-interface PersonViewModel {
-    suspend fun retrievePersons()
-    suspend fun getPersons(): StateFlow<List<UIPerson>>
-}
-
 @HiltViewModel
-class PersonViewModelImpl @Inject constructor(
+class PersonViewModel @Inject constructor(
     private val getPersonsUseCase: GetPersonsUseCase,
     private val retrievePersonsUseCase: RetrievePersonsUseCase,
     private val domainPersonToUIPersonListMapper: ListMapper<DomainPerson, UIPerson>,
-) : ViewModel(), PersonViewModel {
-    override suspend fun retrievePersons() {
+) : ViewModel() {
+    suspend fun retrievePersons() {
         retrievePersonsUseCase()
     }
 
-    override suspend fun getPersons(): StateFlow<List<UIPerson>> =
+    suspend fun getPersons(): StateFlow<List<UIPerson>> =
         getPersonsUseCase()
             .map(domainPersonToUIPersonListMapper::map)
             .stateIn(viewModelScope)
