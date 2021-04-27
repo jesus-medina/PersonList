@@ -33,7 +33,7 @@ class PersonViewModelImplTest {
     lateinit var domainPersonToUIPersonListMapper: ListMapper<DomainPerson, UIPerson>
 
     @InjectMockKs
-    lateinit var personViewModelImpl: PersonViewModelImpl
+    lateinit var personViewModel: PersonViewModel
 
     @Before
     fun setUp() {
@@ -43,7 +43,7 @@ class PersonViewModelImplTest {
     @Test
     fun retrievePersonsShouldCallInvokeOnRetrievePersonsUseCase() = runBlockingTest {
         // When
-        personViewModelImpl.retrievePersons()
+        personViewModel.retrievePersons()
 
         // Then
         coVerify { retrievePersonsUseCase() }
@@ -58,7 +58,7 @@ class PersonViewModelImplTest {
         every { domainPersonToUIPersonListMapper.map(listOf(expectedDomainPerson)) } returns listOf(expectedUIPerson)
 
         // When
-        val result = personViewModelImpl.getPersons().value
+        val result = personViewModel.getPersons().value
 
         // Then
         assertThat(result, `is`(listOf(expectedUIPerson)))
