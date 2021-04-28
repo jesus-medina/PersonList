@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS Person (
+    id INTEGER PRIMARY KEY NOT NULL,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    birthday TEXT NOT NULL
+);
+
+getPersons:
+SELECT *
+FROM Person;
+
+insertOrReplacePerson:
+INSERT OR REPLACE INTO Person(id, firstName, lastName, birthday)
+VALUES (?, ?, ?, ?);
