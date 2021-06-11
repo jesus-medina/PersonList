@@ -5,7 +5,6 @@ buildscript {
     ext.sqld_version = '1.4.3'
     repositories {
         google()
-        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -22,7 +21,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

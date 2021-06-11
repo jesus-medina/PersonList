@@ -1,13 +1,10 @@
 package com.mupper.personlist.data.remote
 
-import com.mupper.personlist.relaxedMockk
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
-import io.ktor.client.request.*
 import io.ktor.http.*
-import io.mockk.confirmVerified
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
